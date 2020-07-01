@@ -1,0 +1,137 @@
+<!--
+
+USEFUL LINKS:
+
+https://jinja.palletsprojects.com/en/2.11.x/templates/#
+
+
+We need a path forward. Let's figure out what we want and move toward that.
+
+Add a line number for each thought. Basically a work/research list.
+
+1. Adding Logo next to the tab name. Next to the title? ** added into the head block following super(), used "url_for"      *** done
+
+2. What do we want in the navbar...
+    Logo "Crafted Technology"(Links to homepage) - possibly center this logo?
+    on far right - "Services" "About Us" "Contact"  - I want this to collapse into a button/hiding thing    *** v.1 done
+
+3. Current offerings "products" should be showcased..
+    Like pythonprogramming.net, where they're in boxes
+    Basically just the scheduler is box one, leads you to the login site
+    Maybe the family tree application is box two
+
+    3.1 Solved the height:100% problem with other attribute "vh" viewport height
+
+4. Probably have a mission statement or something just below the header
+    like the circuit board thing we did on the codepen site.
+    something that scrolls out of the way.
+
+    This mission statement should be the pitch of the company.
+
+    "From the ground up, software and hardware solutions created
+    with you in mind. Get involved with the engineers and developers
+    crafting your custom technology!"
+
+5. Need buttons/forms to submit questions/inquiries for business.
+    seperate page?
+
+6. Flask-bootstrap does not seem like the way to go. I will try using bootstrap 4 instead.
+    This may make forms harder, but there are plenty of examples ... pythonprogramming.net          *** done
+
+7. Making my own base template, basically copying the old flask-bootstrap one.                      *** done
+
+8. Need a login page.. the whole nine yards. Database backend. Storing user selection and
+    profiles.
+
+9. Calendar/ app page. Dynamic calendar UI.
+
+
+
+-->
+
+{% extends "header_footer.html" %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid" id="maincontent" >
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6 p-3">
+
+            <div class="card h-100 ">
+
+                {% if current_user.is_anonymous %}
+                    <a href="{{ url_for('authorization_bp.login_page') }}" >
+                {% else %}
+                    <a href="{{ url_for('profile_bp.user_profile', username=current_user.username) }}" >
+                {% endif %}
+
+                    <img id="card-img" src="{{ url_for('static',filename='example-ui.png') }}" class="card-img-top mx-auto" alt="Calendar Interface Image">
+                    <div class="card-body">
+                      <h5 class="card-title">Shift Work Scheduling</h5>
+                      <p class="card-text">Gather employee preferences and utilize an iterative process to create the best possible schedule,
+                                for everyone involved.</p>
+                      <p class="card-text"><small class="text-muted">Last updated June 8, 2020</small></p> <!-- TODO: These update values should be dynamic -->
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <div class="col-lg-4 col-md-6 p-3">
+            <div class="card h-100">
+            <img id="card-img" src="{{ url_for('static',filename='img-placeholder-1.jpg') }}" class="card-img-top" alt="Calendar Interface Image">
+            <div class="card-body">
+              <h5 class="card-title">Your Custom Software</h5>
+              <p class="card-text">Contact us for a free consultation.</p>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 p-3">
+            <div class="card h-100">
+            <img id="card-img" src="{{ url_for('static',filename='img-placeholder-2.jpg') }}" class="card-img-top" alt="Calendar Interface Image">
+            <div class="card-body">
+              <h5 class="card-title">Your Custom Software</h5>
+              <p class="card-text">Contact us for a free consultation.</p>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+            </div>
+        </div>
+
+        </div>
+
+    <button type="button" class="btn btn-secondary" onclick="displayDate()">Display Date <br> Test Button</button>
+
+    <p id="js"></p>
+</div>
+
+
+
+
+
+{% endblock %}
+
+<!-- TODO: COPY ME-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

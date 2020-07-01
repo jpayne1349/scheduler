@@ -1,0 +1,170 @@
+<!-- This will store our NAVBAR and FOOTER -->
+
+{% extends "baseblocks.html" %}
+
+
+{% block title %}Crafted Technology{% endblock title %} <!-- title is usually in head? -->
+
+
+{% block head %}
+
+
+{{super()}} <!--
+
+                 Actually just includes everything form parent block first.
+
+                 then makes our additions
+
+                 -->
+
+<!--suppress TodoComment -->
+<link rel="icon" type="image/x-icon" href="{{ url_for('static' , filename='ic.ico') }}">
+
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mystyle.css') }}">
+
+
+{% endblock %}
+
+
+{% block navbar %}
+
+<nav id="navigation" class="navbar sticky-top navbar-expand-sm navbar-light shadow-sm px-3">
+
+    <div class="container-fluid d-flex flex-row">
+      <a class="navbar-brand mr-auto" href="/" ><img id="logo" alt="Brand" src="{{ url_for('static',filename='brand.png') }}" ></a>
+        <div class="align-self-end">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarLinks">
+        <span class="navbar-toggler-icon" ></span>
+      </button>
+        </div>
+
+
+      <div class="collapse navbar-collapse" id="navbarLinks">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown ml-auto">
+            <a class="nav-link dropdown-toggle" href="#productsDropdown" id="navbarDropdown" role="button" data-toggle="dropdown">
+              Links
+            </a>
+            <div class="dropdown-menu"> <!-- TODO: The dropdown menu moves to the left weird and the color change on mouseOver is messed up.-->
+
+                {% if current_user.is_anonymous %}
+                    <a class="dropdown-item" href="{{ url_for('authorization_bp.register') }}">Register</a>
+
+                    <a class="dropdown-item" href="{{ url_for('authorization_bp.login_page') }}">Login</a>
+                {% else %}
+                    <a class="dropdown-item" href="{{ url_for('profile_bp.user_profile', username=current_user.username) }}">Your schedule</a>
+
+                     <a class="dropdown-item" href="{{ url_for('authorization_bp.logout') }}">Logout</a>
+                {% endif %}
+
+                <div class="dropdown-divider"><p>Misc. Pages</p></div>
+
+                <a class="dropdown-item" href="/raise404/">404</a>
+
+
+            </div>
+          </li>
+            <li class="nav-item ml-auto">
+            <a class="nav-link" href="https://twitter.com/maddie_stickler">Maddie's Twitter</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>
+
+
+ <div id="flashes" >
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show " role="alert" style="margin:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    </div>
+
+{% endblock navbar %}
+
+
+{% block content %}{% endblock %}
+
+
+
+{% block footer %}
+
+<footer>
+
+    <div id="footer-flexbox" class="d-flex flex-wrap justify-content-start shadow px-3" id="footer" >
+
+       <div class="flex-column align-self-center">
+
+
+            <div class="py-2" >
+
+                <object id="footer-icon" type="image/svg+xml" data="{{ url_for('static',filename='map-marker.svg') }}" ></object>
+
+            </div>
+
+
+           <div class="py-2  " >
+
+                 <object id="footer-icon" type="image/svg+xml" data="{{ url_for('static',filename='phone.svg') }}" ></object>
+
+            </div>
+
+
+           <div class="py-2  " >
+
+                <object id="footer-icon" type="image/svg+xml" data="{{ url_for('static',filename='envelope-closed.svg') }}" ></object>
+
+            </div>
+
+
+       </div>
+
+        <div class="flex-column align-self-center">
+
+                <div class="py-3 px-1   ">
+
+                    <span id="footer-text" >Houston, Texas</span>
+
+                </div>
+
+            <div class="py-3 px-1   ">
+
+                <span id="footer-text" >+1 800 123 4567</span>
+
+            </div>
+
+            <div class="py-3 px-1  ">
+
+                <span id="footer-text" >support@crafted-technology.com</span>
+
+            </div>
+
+        </div>
+
+        <!-- TODO: Another column might work better in an inline flex container instead of inside the one above.-->
+
+<!--
+        <div class="flex-column align-self-center">
+        <div class="p-2 bg-secondary border border-danger">Flex item 1.1</div>
+        <div class="p-2 bg-secondary border border-danger">Flex item 2.1</div>
+        <div class="p-2 bg-secondary border border-danger">Flex item 3.1</div>
+        </div>
+
+    </div>
+-->
+
+</footer>
+
+{% endblock %}
+

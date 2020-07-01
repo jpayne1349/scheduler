@@ -1,0 +1,6 @@
+config.py
+app.db
+env
+migrations
+__pycache__
+craftedTechnology_workspace.code-workspace

@@ -1,0 +1,49 @@
+{% extends "header_footer.html" %}
+
+
+
+{% block content %}
+
+
+<div class="container" id="maincontent" >
+
+    <h2> Hello, {{ current_user.username }} </h2>
+
+    <div id="calendar" class="container" >
+
+    </div>
+
+    <div style="padding-top:50%;">
+        TO DO:
+        <ul>    
+            <li>
+                Save button is broken. Repeating at month change.
+            </li>
+            <li>
+                The user interface is pretty bad. Needs redesign.
+            </li>
+            
+            <li>BUG: dates added to the array that are greyed/out of the 
+                current month are not right.
+            </li>
+            <li>BUG: the month changes breakdown at April. Needs investigating.</li>
+ 
+            <li>These arrays that are currently specific
+                to each month are what will have to be saved
+                to the database. Storing the values will 
+                allow us to bring up their current schedule/
+                selections.
+            </li>
+            </ul>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+<!-- TODO: COPY ME-->

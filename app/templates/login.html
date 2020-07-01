@@ -1,0 +1,43 @@
+{% extends "header_footer.html" %}
+
+
+{% block content %}
+
+<div class="container" id="maincontent" >
+
+    <div id="login_container" >
+
+        <h2> Sign In </h2>
+
+        <form method="post" action="" novalidate> {# no validate set to stop client side from trying to validate #}
+
+            {{ form.hidden_tag() }}
+
+            <div class="form-field">{{ form.username.label }} <br>
+                                    {{ form.username(size=20) }}</div>
+
+                                    {% for error in form.username.errors %}
+                                        <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+
+            <div class="form-field">{{ form.password.label }} <br>
+                                    {{ form.password }}</div>
+
+                                    {% for error in form.password.errors %}
+                                        <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+
+            <div class="" > {{ form.remember_me }} {{ form.remember_me.label }}</div>
+
+             {{ form.submit() }}
+
+        </form>
+
+            <p>New User? <a href="{{ url_for('authorization_bp.register') }}">Click to Register!</a></p>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
