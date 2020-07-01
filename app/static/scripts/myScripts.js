@@ -89,6 +89,7 @@ function printCurrentMonth(today) {
     // save button and div made here
     let save_div = document.createElement("div");
     save_div.className = "row saverow";
+    save_div.id = "save_div";
 
     let save_button = document.createElement("button");
     save_button.id = "save_button";
@@ -103,6 +104,7 @@ function printCurrentMonth(today) {
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
+        document.getElementById("save_div").remove();
 
         console.log("Viewing month = " + monthNames[today.getMonth()]);
 
@@ -116,6 +118,7 @@ function printCurrentMonth(today) {
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
+        document.getElementById("save_div").remove();
 
         console.log("Viewing month = " + monthNames[today.getMonth()]);
 
