@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):                                     # the class
                                                                         # defines 'Post' as the many side of this one-to-many relationship
                                                                         # a backwards reference adds the .author field to "post", adding in "post.author" functionality
                                                                         #
-    selections = db.relationship('Selections', backref='user', lazy='dynamic')                                                                    
+    selection = db.relationship('Selection', backref='user', lazy='dynamic')                                                                    
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)           # making user objects hash their passwords as they come into the system.
@@ -39,23 +39,28 @@ class User(UserMixin, db.Model):                                     # the class
         return '<User {}>'.format(self.username)                    # defines how the object will be printed when called from the interpreter
                                                                       # will be useful for debugging, other Users may be admin, dev, etc.
 
+
+
 # we now need a selections table in order to store the dates selected by the user
 # this will be changed when the database type changes. sqlite does not support arrays.
 # none of these would be required. I don't know that if we submitted again on top, that it
 # would update the row and not just create a new one.
 
+# important note: in creating something like a post, the relationship is established
+# via the backref attribute of the db.relationship
+# so a post would look like p = Post(body='whatever', author=bob) 
 
-class Selections(db.Model):
+# so we will store the week. why cant we just take the whole value and store it
+# and then parse it on the return? 
+# use the javascript to regulate the choices, and this is just storing them for recall
+
+class Selection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    month = db.Column(db.Integer)
-    week = db.Column(db.Integer)
-    day_one = db.Column(db.Integer)
-    day_two = db.Column(db.Integer)
-    day_three = db.Column(db.Integer)
+    date = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return f'<Selection: Month: {month} Week: {week} Days: {day_one} {day_two} {day_three}>'
+        return f'<Selection: Month: {self.month} Week: {self.week} Days: {self.day_one} {self.day_two} {self.day_three}>'
 
     # due to db.relationship above, class has selections.user attribute now
 
