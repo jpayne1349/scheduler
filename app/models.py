@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):                                     # the class
                                                                         # defines 'Post' as the many side of this one-to-many relationship
                                                                         # a backwards reference adds the .author field to "post", adding in "post.author" functionality
                                                                         #
-    selection = db.relationship('Selection', backref='user', lazy='dynamic')                                                                    
+    selections = db.relationship('Selection', backref='user', lazy='dynamic')                                                                    
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)           # making user objects hash their passwords as they come into the system.
@@ -36,7 +36,7 @@ class User(UserMixin, db.Model):                                     # the class
         return check_password_hash(self.password_hash, password)        # the hash check is done per user
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)                    # defines how the object will be printed when called from the interpreter
+        return 'User {}'.format(self.username)                    # defines how the object will be printed when called from the interpreter
                                                                       # will be useful for debugging, other Users may be admin, dev, etc.
 
 
@@ -56,11 +56,11 @@ class User(UserMixin, db.Model):                                     # the class
 
 class Selection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Integer)
+    date_string = db.Column(db.String(8))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return f'<Selection: Month: {self.month} Week: {self.week} Days: {self.day_one} {self.day_two} {self.day_three}>'
+        return f'Date: {date_string}'
 
     # due to db.relationship above, class has selections.user attribute now
 
@@ -73,7 +73,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))               # "user" is lowercase because it's referencing the name of the table according to SQLAlchemy, not our class name
 
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return 'Post {}'.format(self.body)
 
 
 
