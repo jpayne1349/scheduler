@@ -35,6 +35,25 @@ function pad(n) {
 
 }
 
+// this is the function that should grab the dates selected and post it to the server
+function save(selectedDates) {
+    let data = JSON.stringify(selectedDates);
+    // insert spinner here
+    $.post('/save', {
+        //send the data
+        data        
+    }).done(function (response) {
+        //show response sent from server
+        //something liked saved, with a check mark
+        console.log(response);
+    }).fail(function() {
+        //show a failed to save response
+    });
+    console.log(data);
+    console.log(selectedDates);
+    console.log("Save Button Clicked");
+}
+
 // this wraps the whole calendar, just passing in the current date we grab at file run
 // or, passing in a date in a different month, brings up that months information.
 function printCurrentMonth(today) {
@@ -101,22 +120,8 @@ function printCurrentMonth(today) {
     save_button.id = "save_button";
     save_button.className = "btn btn-primary ml-auto";
     save_button.innerText = "Save";
-
+ 
     save_div.appendChild(save_button);
-
-                /*
-
-            saving the data put in:
-                separate the day, month, and year variable to pass to the server
-
-                things to figure out:
-                    submission of the javascript variables through a http request
-                    parsing those variables into the database
-                    i.e. setting them equal to the database variables and pushing them in.
-                    pulling those variables back out on page load, or on calendar month change.
-                    
-            */
-
 
     back_button.onclick = function () {
 
@@ -146,18 +151,8 @@ function printCurrentMonth(today) {
         return printCurrentMonth(today);
     };
 
-
-
-
-    // moving to line ~198 for readability
-    // let find_beginning_of_month = new Date();
-
-    // find_beginning_of_month.setFullYear(year, month, 1);
-
-    // let first_of_month = find_beginning_of_month.getDay() //integer 0 through 6
-
-    // creating the column titles, days of the week
     let j;
+
     for(j=0; j<dayNames.length; j++) {
         const dayNameDiv = document.createElement("div");
         dayNameDiv.id = "dayNameDiv";
@@ -190,6 +185,8 @@ function printCurrentMonth(today) {
     // TODO: this would be modified during a leap year
     let month_total = day_count[month]
 
+    let week_count = 0;
+
     let days_selected_array = [];
 
     let max_days = [];
@@ -197,7 +194,27 @@ function printCurrentMonth(today) {
     let in_current_month = true;
     
     let done_printing = false;
-    
+
+                /*
+
+            saving the data put in:
+                separate the day, month, and year variable to pass to the server
+
+                things to figure out:
+                    we need a new view in the python code to accept selections
+                    this view will recieve post requests, needs the "request" component of flask.
+
+                    b
+                    submission of the javascript variables through a http request
+                    parsing those variables into the database
+                    i.e. setting them equal to the database variables and pushing them in.
+                    pulling those variables back out on page load, or on calendar month change.
+                    
+            */
+
+    save_button.addEventListener('click', function() {
+        save(days_selected_array);
+    });
     
     // creating the grid for days
     let i;
@@ -234,10 +251,7 @@ function printCurrentMonth(today) {
                 }
             }
         }
-        
-            let week_count = 0;
-
-            
+                    
             // every 7 days, create a new row
             if (i % 7 == 0 && i !== 0) {
             const end_week = document.createElement("div");
@@ -321,6 +335,7 @@ function printCurrentMonth(today) {
                         // checking max days list for this week
                         if(max_days[day_container.classList.item(1)] == 3) {
                             
+
                             return console.log("MAX DAYS SELECTED!");
 
                         } else {
