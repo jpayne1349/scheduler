@@ -60,7 +60,7 @@ class Selection(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return f'Date: {date_string}'
+        return f'Date: {self.date_string}'
 
     # due to db.relationship above, class has selections.user attribute now
 
