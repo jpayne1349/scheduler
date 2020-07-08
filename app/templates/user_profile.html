@@ -4,6 +4,11 @@
 
 {% block content %}
 
+<script>
+        // passing in the old_selections from the database to a javascript list
+        var old_selections = {{ old_selections|tojson }};
+        
+</script>
 
 <div class="container" id="maincontent" >
 
@@ -23,8 +28,7 @@
                 Fix config files in both projects. Use a json file to load variables, or use environment variables.
             </li>
             <li>
-                The save button does nothing. Notes in myScripts file on path forward.
-                Need database integration.
+                Created problem with month changes. Needs thought including the database pulls/pushes...
             </li>
             <li>
                 The user interface is pretty bad. Needs redesign.
@@ -33,7 +37,6 @@
             <li>BUG: dates added to the array that are greyed/out of the 
                 current month are not right.
             </li>
-            <li>BUG: the month changes breakdown at April. Needs investigating.</li>
  
             </ul>
 
@@ -42,6 +45,7 @@
 
 </div>
 
+<script src="{{ url_for('static',filename='scripts/calendarScripts.js') }}"></script>
 
 {% endblock %}
 
