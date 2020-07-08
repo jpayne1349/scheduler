@@ -132,7 +132,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 
-#in_month_date {
+#present {
 
 
     color:blue;
@@ -145,7 +145,7 @@ a:link, a:visited, a:hover, a:active {
 
 }
 
-#out_month_date {
+#past, #future {
 
 
     color:grey;
@@ -185,7 +185,7 @@ a:link, a:visited, a:hover, a:active {
 
 }
 
-.circle {
+.selected {
 
 
     background-color:#d3e9ff;
