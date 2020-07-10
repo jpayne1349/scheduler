@@ -6,6 +6,8 @@
 
  // this has to be a Date object, with "new"
  // this runs basically on every page.
+
+
 var current_date_object = new Date();
 
 
@@ -26,24 +28,6 @@ function pad(n) {
 
 }
 
-// this is the function that should grab the dates selected and post it to the server
-function save(selectedDates) {
-    let data = JSON.stringify(selectedDates);
-    // insert spinner here
-    $.post('/save', {
-        //send the data
-        data        
-    }).done(function (response) {
-        //show response sent from server
-        //something liked saved, with a check mark
-        console.log(response);
-    }).fail(function() {
-        //show a failed to save response
-    });
-    console.log(data);
-    console.log(selectedDates);
-    console.log("Save Button Clicked");
-}
 
 // this wraps the whole calendar, just passing in the current date we grab at file run
 // or, passing in a date in a different month, brings up that months information.
@@ -107,12 +91,47 @@ function printCurrentMonth(today) {
     save_div.className = "row saverow";
     save_div.id = "save_div";
 
+    let icons_div = document.createElement("div");
+    icons_div.id = "icons_div";
+    icons_div.className = "my-auto ml-auto";
+
+    let checkmark = document.createElement("i");
+    checkmark.id = "checkmark";
+    checkmark.className = "fa fa-check-circle"
+    checkmark.classList.add("hidden");
+    
+    let save_loader = document.createElement("div");
+    save_loader.id = "save_loader";
+    save_loader.classList.add("hidden");
+
+    let save_arrow = document.createElement("i");
+    save_arrow.id = "save_arrow";
+    save_arrow.className = "fa fa-arrow-circle-right";
+    save_arrow.classList.add("hidden");
+
+    icons_div.appendChild(checkmark);
+    icons_div.appendChild(save_loader);
+    icons_div.appendChild(save_arrow);
+
     let save_button = document.createElement("button");
     save_button.id = "save_button";
-    save_button.className = "btn btn-primary ml-auto";
+    save_button.className = "btn btn-primary";
     save_button.innerText = "Save";
- 
+    
+    let data_toggle = document.createAttribute("data-toggle");
+    data_toggle.value = "tooltip";
+    let data_placement = document.createAttribute("data-placement");
+    data_placement.value = "right";
+    let data_content = document.createAttribute("data-original-title");
+    data_content.value = "Already saved!";
+   
+    save_button.setAttributeNode(data_toggle);
+    save_button.setAttributeNode(data_content);
+    save_button.setAttributeNode(data_placement);
+    
+    save_div.appendChild(icons_div);
     save_div.appendChild(save_button);
+    
 
     back_button.onclick = function () {
 
@@ -148,6 +167,7 @@ function printCurrentMonth(today) {
         const dayNameDiv = document.createElement("div");
         dayNameDiv.id = "dayNameDiv";
         dayNameDiv.className = "col";
+        
 
         const dayName = document.createElement("p");
         dayName.id = "dayName";
@@ -188,6 +208,7 @@ function printCurrentMonth(today) {
 
 
     save_button.addEventListener('click', function() {
+        // custom function for post request to server
         save(days_selected_array);
     });
 
@@ -258,7 +279,13 @@ function printCurrentMonth(today) {
                 const day_container = document.createElement("div");
                 day_container.className = "col";
                 day_container.classList.add(week_count.toString()); // week tracking added to classlist of div
+                if(week_count % 2) {
+                    day_container.classList.add("color_one");
+                } else {
+                    day_container.classList.add("color_two");
+                }
                 day_container.id = "day_container";
+                day_container.classList.add("border");
 
                 // the day/number printed is being made here
                 const day = document.createElement("p");
@@ -313,10 +340,10 @@ function printCurrentMonth(today) {
 
                 // add event listeners to the objects for actions
                 day_container.onmouseover = function () {
-                    day_container.classList.add("light_circle");
+                    day_container.classList.add("hovering");
                 };
                 day_container.onmouseout = function () {
-                    day_container.classList.remove("light_circle");
+                    day_container.classList.remove("hovering");
                 };
 
                 day_container.onclick = function () { 
@@ -339,7 +366,13 @@ function printCurrentMonth(today) {
 
                     // process for "deselection"
                     if (day_container.classList.contains("selected")) { 
-                        
+                        //changing icons to show not saved
+                        checkmark.classList.remove("show");
+                        save_arrow.classList.add("show");
+
+                        //show tool tip on save button
+                        hideTip();
+
                         day_container.classList.remove("selected");
 
                         let unselect_day = days_selected_array.indexOf(
@@ -364,6 +397,12 @@ function printCurrentMonth(today) {
                             return console.log("MAX DAYS SELECTED!");
 
                         } else {
+                            // changing icons to show not saved
+                            checkmark.classList.remove("show");
+                            save_arrow.classList.add("show");
+
+                            //show tool tip on save button
+                            hideTip();
 
                             day_container.classList.add("selected");
 
@@ -395,9 +434,80 @@ function printCurrentMonth(today) {
 
 printCurrentMonth(current_date_object);
 
+// this is the function that should grab the dates selected and post it to the server
+function save(selectedDates) {
+    sent();
+
+    let data = JSON.stringify(selectedDates);
+
+    $.post('/save', {
+        //send the data
+        data
+    }).done(function (response) {
+        success();
+
+        // TODO: should this response mean anything?
+        console.log(response);
+    }).fail(function () {
+        //show a failed to save response
+        fail();
+    });
+    console.log(data);
+    console.log(selectedDates);
+    console.log("Save Button Clicked");
+}
+
+function sent() {
+
+    let save_loader = document.getElementById("save_loader");
+    let save_button = document.getElementById("save_button");
+    let checkmark = document.getElementById("checkmark");
+    let save_arrow = document.getElementById("save_arrow");
+
+    save_arrow.classList.remove("show");
+    checkmark.classList.remove("show");
+    save_loader.classList.add("show");
+   
+}
+
+function success() {
+    let save_loader = document.getElementById("save_loader");
+    let checkmark = document.getElementById("checkmark");
+    let save_button = document.getElementById("save_button");
+
+    setTimeout(() => { 
+        save_loader.classList.remove("show");
+    }, 400); 
+    setTimeout(() => {
+        checkmark.classList.add("show");
+    }, 800);
+
+    //show tool tip on save button
+    showTip();
+    
+    
+}
+
+function fail() {
 
 
+}
 
 
+$(function () {
+    // @ts-ignore
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger: 'hover'
+    })  
+})
 
+function showTip() {
+    // @ts-ignore
+    $('#save_button').tooltip('enable')
 
+}
+
+function hideTip() {
+    // @ts-ignore
+    $('#save_button').tooltip('disable')
+}
