@@ -42,7 +42,7 @@ def save():
         db.session.add(new_sel)
         print("Date added:", date)
     db.session.commit()
-
+    # "response" sent to javascript
     return jsonify("Test Save")
 
 
