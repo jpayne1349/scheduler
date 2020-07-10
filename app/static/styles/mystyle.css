@@ -103,25 +103,21 @@ a:link, a:visited, a:hover, a:active {
 
 #day_grid {
 
-    height:80%;
-    
 
 }
 
 
 #day_container{
 
-    
     text-align:center;
     cursor: pointer;
     
-    height:16.5%;
 
 }
 
 .w-100 {
 
-    height:1px !important;
+    height:0px !important;
 
 }
 
@@ -134,15 +130,12 @@ a:link, a:visited, a:hover, a:active {
 
 #present {
 
-
-    color:blue;
+    color:black;
     font-size:2.3vw;
     margin:0;
     padding-top:20%;
+    padding-bottom: 20%;
     
-
-        /* needs a max font size??? */
-
 }
 
 #past, #future {
@@ -152,7 +145,7 @@ a:link, a:visited, a:hover, a:active {
     font-size:2.3vw;
     margin:0;
     padding-top:20%;
-    
+    padding-bottom: 20%;
 
         /* needs a max font size??? */
 
@@ -168,28 +161,100 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .saverow {
-    padding-top:1vh;   
+    padding-top:1vh;    
 }
 
 #save_button {
-
-    font-size:2.2vw;
+    
+    font-size:medium;
     margin-right: 20px;
-}
-
-.light_circle {
+    margin-left: 20px;
+    background-color: blue;
+    border-color: black;
+    color: white;
     
 
-    background-color:#f8f9fa;
-    border-radius: 50%;
+}
+
+.hovering {
+    background-color:#c5c5c5 !important;
+    
 
 }
 
 .selected {
 
 
-    background-color:#d3e9ff;
+    background-color:#8f9fca !important;
+    border-radius: 10%;
+
+
+}
+
+
+#save_loader {
+
+    position: absolute;
+    top: 0.2vw;
+    left: 0px;
+    border: 0.5vw solid #f3f3f3;
     border-radius: 50%;
+    border-top: 0.5vw solid #21ce2a;
+    width: 3vw;
+    height: 3vw;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
+    transition: opacity 1s;
 
+}
 
+#save_arrow {
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size:3.5vw;
+    transition: opacity 0.5s ease;
+    color: rgb(255, 136, 0);
+
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#checkmark {
+
+    font-size: 3.5vw;
+    color: #21ce2a;
+    transition: opacity 0.5s ease;
+
+}
+
+#icons_div {
+    position: relative;
+}
+
+.hidden {
+    opacity: 0;
+    
+}
+
+.show {
+    opacity: 1;
+}
+
+.color_one {
+    background-color: rgb(253, 253, 253);
+}
+
+.color_two {
+    background-color:rgb(248, 248, 248);
 }
