@@ -55,7 +55,7 @@ def login_page():
 
         user = User.query.filter_by(username=form.username.data).first() # filtering the form info for the username portion, and stopping at the first that matches?
 
-        if user is None or not user.check_password(form.password.data): # this is doing two checks. if the user was None, flash. and if the password was wrong, flash.
+        if user is None or not user.check_password(form.password.data): # this is doing two checks. if the user was not found, flash. and if the password was wrong, flash.
             flash('Invalid username or password')
             return redirect(url_for('authorization_bp.login_page'))
 
@@ -66,7 +66,6 @@ def login_page():
         if not next_page or url_parse(next_page).netloc != '':
 
             next_page = url_for('profile_bp.user_profile', username=current_user.username)
-
         return redirect(next_page)
 
     return render_template('login.html', form=form)
