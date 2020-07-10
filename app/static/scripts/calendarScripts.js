@@ -135,30 +135,28 @@ function printCurrentMonth(today) {
 
     back_button.onclick = function () {
 
-        today.setMonth(today.getMonth()-1);
+        let previous_month = today;
+        previous_month.setMonth(month_var - 1);
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
         document.getElementById("save_div").remove();
 
-        console.log("Viewing month = " + monthNames[today.getMonth()]);
-
-        return printCurrentMonth(today);
+        return printCurrentMonth(previous_month);
 
     }
 
 
     fwd_button.onclick = function () {
-        
-        today.setMonth(today.getMonth() + 1);
+
+        let next_month = today;
+        next_month.setMonth(month_var + 1);
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
         document.getElementById("save_div").remove();
 
-        console.log("Viewing month = " + monthNames[today.getMonth()]);
-
-        return printCurrentMonth(today);
+        return printCurrentMonth(next_month);
     };
 
     let j;
@@ -206,14 +204,13 @@ function printCurrentMonth(today) {
     
     let done_printing = false;
 
-
     save_button.addEventListener('click', function() {
         // custom function for post request to server
         save(days_selected_array);
     });
 
-    let month_var = today.getMonth();
-    console.log(month_var)
+    
+
     // creating the grid for days
     let i;
     for(i=0; i<42; i++) {
@@ -226,14 +223,13 @@ function printCurrentMonth(today) {
                 print_number = i + 1;
                 in_current_month = true;
             }
-        }else { // runs when the previous month days need to be shown at the beginning of the first week
+        } else { // runs when the previous month days need to be shown at the beginning of the first week
 
             // finding the apropriate day from the previous month to display
             // example: i = 0  +  previous month day count = 30  -  day of the week the next month starts = tuesday = 2
             // day to print = 30 - (2 - 1) = 29. so sunday will show 29. monday will be 30. Tuesday will start the new month at 1.
             print_number = i + day_count[month-1] - (first_of_month - 1);
             in_current_month = false;
-            today.setMonth(month_var - 1);
             
 
             if (print_number >= day_count[month-1] + 1) { // finished with previous month
@@ -241,14 +237,13 @@ function printCurrentMonth(today) {
                 // otherwise, increases as i loops
                 print_number = i - (first_of_month - 1);
                 in_current_month = true;
-                today.setMonth(month_var);
-
+                
                 // checking the above calculated print number for the end of this month
                 if (print_number >= day_count[month] +1) {
                     // removing the previous months day count from the number, so it start back at 1
                     print_number -= day_count[month];
                     in_current_month = false;
-                    today.setMonth(month_var + 1);
+                    
                 }
             }
         }
@@ -308,32 +303,37 @@ function printCurrentMonth(today) {
                 day_grid.appendChild(day_container);
 
                 // this needs comment explanation. selects the days that were stored in the database
-                let i;
-                let checked_date = today;
+
+                let checked_date = new Date(today.getTime());
+
+                if (day.id == "present") {
+                    checked_date.setMonth(month);
+                } else if (day.id == "past") {
+                    checked_date.setMonth(month - 1);
+                } else if (day.id == "future") {
+                    checked_date.setMonth(month + 1);
+                }
+
                 checked_date.setDate(print_number);
 
                 let checked_placeholder = pad(checked_date.getMonth() + 1) +
                     pad(checked_date.getDate()) +
                     checked_date.getFullYear();
 
+                let i;
                 // @ts-ignore
                 for(i=0; i<old_selections.length;i++) {
                     // @ts-ignore
                     if(old_selections[i] == checked_placeholder) {
                         // @ts-ignore
-                        
+
                         // this print number div has been selected
                         day_container.classList.add("selected");
 
                         days_selected_array.push(checked_placeholder);
-                        console.log("Dates added array = " +
-                            days_selected_array);
 
                         // finding which week/index to adjust in the max days list
                         max_days[week_count] += 1;
-
-                        console.log("Max days array = " + max_days);
-
                         
                     }
                 }
@@ -348,16 +348,16 @@ function printCurrentMonth(today) {
 
                 day_container.onclick = function () { 
                     
-                    today.setDate(print_number); // changing the day of the month, of the Date object passed in.
-                    
-                    if(day.id === "present") {
-                        today.setMonth(month_var);
-                    } else if(day.id === "past") {
-                        today.setMonth(month_var - 1);
-                    } else if (day.id === "future") {
-                        today.setMonth(month_var + 1);
+                    if (day.id == "present") {
+                        today.setMonth(month);
+                    } else if (day.id == "past") {
+                        today.setMonth(month - 1);
+                    } else if (day.id == "future") {
+                        today.setMonth(month + 1);
                     }
-
+                    
+                    today.setDate(print_number); // changing the day of the month, of the Date object passed in.
+                
                     // formatted variable for the day clicked
                     let day_placeholder =
                     pad(today.getMonth() + 1) +
@@ -380,13 +380,9 @@ function printCurrentMonth(today) {
                         );
 
                         days_selected_array.splice(unselect_day, 1);
-                        console.log("Current dates selected = " + 
-                        days_selected_array);
                         
                         // finding which week/index to adjust in the max days list
                         max_days[day_container.classList.item(1)] -= 1;
-
-                        console.log("Max days array = " + max_days);
 
                     //process for "selection"
                     } else {
@@ -407,13 +403,9 @@ function printCurrentMonth(today) {
                             day_container.classList.add("selected");
 
                             days_selected_array.push(day_placeholder);
-                            console.log("Dates added array = " +
-                            days_selected_array);
 
                             // finding which week/index to adjust in the max days list
                             max_days[day_container.classList.item(1)] += 1;
-
-                            console.log("Max days array = " + max_days);
 
                         }
                     }
@@ -452,9 +444,7 @@ function save(selectedDates) {
         //show a failed to save response
         fail();
     });
-    console.log(data);
-    console.log(selectedDates);
-    console.log("Save Button Clicked");
+
 }
 
 function sent() {
