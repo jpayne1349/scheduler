@@ -222,27 +222,36 @@ function printCurrentMonth(today) {
         let print_number;
         
         if (first_of_month == 0) { //from above, based on day of the week of the 1st of this month
-            while ( i < month_total ) {
+
                 print_number = i + 1;
-                in_current_month = true;
-            }
+                in_current_month = true; 
+
+                if (print_number > day_count[month]) {
+
+                    print_number -= day_count[month];
+                    in_current_month = false;
+                }
+
         } else { // runs when the previous month days need to be shown at the beginning of the first week
 
             // finding the apropriate day from the previous month to display
             // example: i = 0  +  previous month day count = 30  -  day of the week the next month starts = tuesday = 2
-            // day to print = 30 - (2 - 1) = 29. so sunday will show 29. monday will be 30. Tuesday will start the new month at 1.
+            
+            if( month-1 < 0){ month = 12; }
             print_number = i + day_count[month-1] - (first_of_month - 1);
             in_current_month = false;
             
 
-            if (print_number >= day_count[month-1] + 1) { // finished with previous month
+            if (print_number > day_count[month-1]) { // finished with previous month
                 // using the first of the month day of the week to offset the days already printed
                 // otherwise, increases as i loops
                 print_number = i - (first_of_month - 1);
                 in_current_month = true;
                 
+
+                if(month == 12){ month = 0; }
                 // checking the above calculated print number for the end of this month
-                if (print_number >= day_count[month] +1) {
+                if (print_number > day_count[month]) {
                     // removing the previous months day count from the number, so it start back at 1
                     print_number -= day_count[month];
                     in_current_month = false;
@@ -410,7 +419,6 @@ function printCurrentMonth(today) {
                             day_container.classList.add("selected");
 
                             days_selected_array.push(clicked_placeholder);
-                            console.log(clicked_placeholder);
 
                             // finding which week/index to adjust in the max days list
                             max_days[day_container.classList.item(1)] += 1;
