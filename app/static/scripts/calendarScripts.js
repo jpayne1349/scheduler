@@ -42,7 +42,6 @@ function printCurrentMonth(today) {
     day_grid.id = ("day_grid");
     day_grid.classList.add("row");
     day_grid.classList.add("no-gutters");
-    day_grid.classList.add("border");
 
     let back_button = document.createElement("button");
     back_button.classList.add("col-2");
@@ -136,7 +135,7 @@ function printCurrentMonth(today) {
     back_button.onclick = function () {
 
         let previous_month = today;
-        previous_month.setMonth(month_var - 1);
+        previous_month.setMonth(month - 1);
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
@@ -150,7 +149,7 @@ function printCurrentMonth(today) {
     fwd_button.onclick = function () {
 
         let next_month = today;
-        next_month.setMonth(month_var + 1);
+        next_month.setMonth(month + 1);
 
         document.getElementById("calendar_head").remove();
         document.getElementById("day_grid").remove();
@@ -207,6 +206,10 @@ function printCurrentMonth(today) {
     save_button.addEventListener('click', function() {
         // custom function for post request to server
         save(days_selected_array);
+        
+        // selected days need to be added to the old_selections list for month changes
+        // @ts-ignore
+        old_selections = days_selected_array;
     });
 
     
@@ -304,6 +307,8 @@ function printCurrentMonth(today) {
 
                 // this needs comment explanation. selects the days that were stored in the database
 
+                // be careful when creating copies! a copy can literally just be a pointer to the original object
+                // or it can be a new object.
                 let checked_date = new Date(today.getTime());
 
                 if (day.id == "present") {
@@ -346,23 +351,25 @@ function printCurrentMonth(today) {
                     day_container.classList.remove("hovering");
                 };
 
-                day_container.onclick = function () { 
+                day_container.onclick = function () {
+
+                    let clicked_date = new Date(today.getTime());
                     
                     if (day.id == "present") {
-                        today.setMonth(month);
+                        clicked_date.setMonth(month);
                     } else if (day.id == "past") {
-                        today.setMonth(month - 1);
+                        clicked_date.setMonth(month - 1);
                     } else if (day.id == "future") {
-                        today.setMonth(month + 1);
+                        clicked_date.setMonth(month + 1);
                     }
                     
-                    today.setDate(print_number); // changing the day of the month, of the Date object passed in.
+                    clicked_date.setDate(print_number); // changing the day of the month, of the Date object passed in.
                 
                     // formatted variable for the day clicked
-                    let day_placeholder =
-                    pad(today.getMonth() + 1) +
-                    pad(today.getDate()) +
-                    today.getFullYear();
+                    let clicked_placeholder =
+                        pad(clicked_date.getMonth() + 1) +
+                        pad(clicked_date.getDate()) +
+                        clicked_date.getFullYear();
 
                     // process for "deselection"
                     if (day_container.classList.contains("selected")) { 
@@ -376,7 +383,7 @@ function printCurrentMonth(today) {
                         day_container.classList.remove("selected");
 
                         let unselect_day = days_selected_array.indexOf(
-                        day_placeholder
+                            clicked_placeholder
                         );
 
                         days_selected_array.splice(unselect_day, 1);
@@ -402,7 +409,8 @@ function printCurrentMonth(today) {
 
                             day_container.classList.add("selected");
 
-                            days_selected_array.push(day_placeholder);
+                            days_selected_array.push(clicked_placeholder);
+                            console.log(clicked_placeholder);
 
                             // finding which week/index to adjust in the max days list
                             max_days[day_container.classList.item(1)] += 1;
