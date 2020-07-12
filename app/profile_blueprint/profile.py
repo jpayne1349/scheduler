@@ -17,10 +17,11 @@ dateFormat = re.compile('[^%22][\d]+') # regular expression object to parse the 
 def user_profile(username):
     old_selections = Selection.query.filter(Selection.user==current_user).all()
     # we want to send these old_selections through to the javascript to populate the calendar
+    print(old_selections)
+
     sel_list = []
     for each in old_selections:
         sel_list.append(each.date_string)
-    print(sel_list)
 
     return render_template('user_profile.html', old_selections=sel_list)
 
@@ -43,7 +44,7 @@ def save():
         print("Date added:", date)
     db.session.commit()
     # "response" sent to javascript
-    return jsonify("Test Save")
+    return jsonify(new_selections)
 
 
 """
