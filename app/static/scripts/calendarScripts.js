@@ -31,7 +31,7 @@ function pad(n) {
 
 // this wraps the whole calendar, just passing in the current date we grab at file run
 // or, passing in a date in a different month, brings up that months information.
-function printCurrentMonth(today) {
+function printCurrentMonth(today, current_selections) {
 
     let header_cont = document.createElement("div");
     header_cont.id = ("calendar_head");
@@ -134,6 +134,9 @@ function printCurrentMonth(today) {
 
     back_button.onclick = function () {
 
+        //old_selections = days_selected_array;
+        save(days_selected_array);
+    
         let previous_month = today;
         previous_month.setMonth(month - 1);
 
@@ -141,13 +144,17 @@ function printCurrentMonth(today) {
         document.getElementById("day_grid").remove();
         document.getElementById("save_div").remove();
 
-        return printCurrentMonth(previous_month);
+        return printCurrentMonth(previous_month, days_selected_array);
 
     }
 
 
     fwd_button.onclick = function () {
-
+        
+        //old_selections = days_selected_array;
+        save(days_selected_array);
+        
+        
         let next_month = today;
         next_month.setMonth(month + 1);
 
@@ -155,7 +162,7 @@ function printCurrentMonth(today) {
         document.getElementById("day_grid").remove();
         document.getElementById("save_div").remove();
 
-        return printCurrentMonth(next_month);
+        return printCurrentMonth(next_month, days_selected_array);
     };
 
     let j;
@@ -197,6 +204,14 @@ function printCurrentMonth(today) {
 
     let days_selected_array = [];
 
+    if(typeof current_selections !== 'undefined'){
+        for(let i = 0;i < current_selections.length;i++) {
+            days_selected_array.push(current_selections[i]);
+        }
+    } else {
+        days_selected_array = old_selections;
+    }
+
     let max_days = [0];
 
     let in_current_month = true;
@@ -204,15 +219,19 @@ function printCurrentMonth(today) {
     let done_printing = false;
 
     save_button.addEventListener('click', function() {
-        // custom function for post request to server
-        save(days_selected_array);
-        
+
         // selected days need to be added to the old_selections list for month changes
         // @ts-ignore
         old_selections = days_selected_array;
+
+        // custom function for post request to server
+        save(days_selected_array);
+
+        console.log("Days selected array = ", days_selected_array);
+        console.log("Old seletions array = ", old_selections);
     });
 
-    
+    // we need a way to keep days currently in the array on month changes.
 
     // creating the grid for days
     let i;
@@ -334,6 +353,11 @@ function printCurrentMonth(today) {
                     pad(checked_date.getDate()) +
                     checked_date.getFullYear();
 
+                function checkDuplicate(date) {
+                    // we want to check this date against the checked_placeholder that has validated into this loop
+                    return date == checked_placeholder;
+                }
+
                 let i;
                 // @ts-ignore
                 for(i=0; i<old_selections.length;i++) {
@@ -344,7 +368,12 @@ function printCurrentMonth(today) {
                         // this print number div has been selected
                         day_container.classList.add("selected");
 
-                        days_selected_array.push(checked_placeholder);
+                        
+                        if (!days_selected_array.find(checkDuplicate)) {
+                            console.log("didn't find a match");
+                            console.log("adding on load:", checked_placeholder);
+                            days_selected_array.push(checked_placeholder);
+                        }
 
                         // finding which week/index to adjust in the max days list
                         max_days[week_count] += 1;
@@ -400,6 +429,9 @@ function printCurrentMonth(today) {
                         // finding which week/index to adjust in the max days list
                         max_days[day_container.classList.item(1)] -= 1;
 
+                        console.log("Days selected array = ", days_selected_array);
+                        console.log("Old seletions array = ", old_selections);
+
                     //process for "selection"
                     } else {
                         // checking max days list for this week
@@ -423,6 +455,9 @@ function printCurrentMonth(today) {
                             // finding which week/index to adjust in the max days list
                             max_days[day_container.classList.item(1)] += 1;
 
+                            console.log("Days selected array = ", days_selected_array);
+                            console.log("Old seletions array = ", old_selections);
+
                         }
                     }
 
@@ -437,6 +472,11 @@ function printCurrentMonth(today) {
     calendar.appendChild(header_cont);
     calendar.appendChild(day_grid);
     calendar.appendChild(save_div);
+
+    console.log("Days selected array = ", days_selected_array);
+    console.log("Old seletions array = ", old_selections);
+
+
 
 }
 
@@ -453,9 +493,8 @@ function save(selectedDates) {
         data
     }).done(function (response) {
         success();
-
-        // TODO: should this response mean anything?
-        console.log(response);
+        console.log("Server response:",response);
+        old_selections = response;
     }).fail(function () {
         //show a failed to save response
         fail();
@@ -485,7 +524,7 @@ function success() {
         save_loader.classList.remove("show");
     }, 400); 
     setTimeout(() => {
-        checkmark.classList.add("show");
+        //checkmark.classList.add("show");
     }, 800);
 
     //show tool tip on save button
@@ -517,3 +556,4 @@ function hideTip() {
     // @ts-ignore
     $('#save_button').tooltip('disable')
 }
+
